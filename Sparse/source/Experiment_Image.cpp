@@ -38,7 +38,22 @@ int main() {
 		std::cout << "Iteration " << iter << std::endl;
 	}*/
 
-	/*sf::RenderWindow rw;
+	std::vector<sparse::PredictiveHierarchy::LayerDesc> layerDescs(1);
+
+	sparse::PredictiveHierarchy ph;
+
+	ph.create(4, 4, layerDescs, -0.01f, 0.01f, generator);
+
+	std::vector<std::vector<sparse::BitIndexType>> bits = {
+		{ 0, 4, 9 },
+		{ 1, 4, 5 },
+		{ 4, 7, 9 },
+		{ 3, 6, 9 }
+	};
+
+	int iter = 0;
+
+	sf::RenderWindow rw;
 
 	rw.create(sf::VideoMode(800, 600), "Test");
 
@@ -48,6 +63,10 @@ int main() {
 	const float renderMouseTime = 0.001f;
 
 	bool quit = false;
+
+	vis::PrettySDR psdr;
+
+	psdr.create(16, 16);
 
 	while (!quit) {
 		clock.restart();
@@ -64,40 +83,35 @@ int main() {
 
 		rw.clear();
 
-		float ts = clock.getElapsedTime().asSeconds();
+		ph.simStep(bits[iter % bits.size()]);
 
-		while (ts < frameTime - renderMouseTime) {
-			ts = clock.getElapsedTime().asSeconds();
-		}
+		for (int i = 0; i < 256; i++)
+			psdr[i] = 0.0f;
 
-		sf::CircleShape cs;
+		for (int i = 0; i < ph.getLayers()[0]._sdr.getBitIndices().size(); i++)
+			psdr[ph.getLayers()[0]._sdr.getBitIndices()[i]] = 1.0f;
 
-		sf::Vector2i mousePos = sf::Mouse::getPosition(rw);
-
-		cs.setFillColor(sf::Color::Blue);
-		cs.setRadius(3.0f);
-
-		cs.setPosition(sf::Vector2f(mousePos.x, mousePos.y));
-
-		rw.draw(cs);
+		psdr.draw(rw, sf::Vector2f(0.0f, 0.0f));
 
 		rw.display();
-	}*/
 
-	std::vector<sparse::PredictiveHierarchy::LayerDesc> layerDescs(1);
+		iter++;
+	}
 
-	sparse::PredictiveHierarchy ph;
+	
+	/*for (int iter = 0; iter < 10000; iter++) {
+		ph.simStep(bits[iter % bits.size()]);
 
-	ph.create(4, 4, layerDescs, -0.01f, 0.01f, generator);
+		//for (int i = 0; i < ph.getPredBitIndices().size(); i++)
+		//	std::cout << ph.getPredBitIndices()[i] << " ";
 
-	std::vector<std::vector<sparse::BitIndexType>> bits = {
-		{ 0, 4, 9 },
-		{ 1, 4, 5 },
-		{ 4, 7, 9 },
-		{ 3, 6, 9 }
-	};
+		//for (int i = 0; i < ph.getLayers()[2]._pred.getBitIndices().size(); i++)
+		//	std::cout << ph.getLayers()[2]._pred.getBitIndices()[i] << " ";
 
-	for (int iter = 0; iter < 1000; iter++) {
+		//std::cout << std::endl;
+	}
+
+	for (int iter = 0; iter < 100; iter++) {
 		ph.simStep(bits[iter % bits.size()]);
 
 		for (int i = 0; i < ph.getPredBitIndices().size(); i++)
@@ -107,7 +121,9 @@ int main() {
 		//	std::cout << ph.getLayers()[2]._pred.getBitIndices()[i] << " ";
 
 		std::cout << std::endl;
-	}
+	}*/
+
+	//system("pause");
 
 	return 0;
 }

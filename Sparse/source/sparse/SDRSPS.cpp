@@ -92,13 +92,21 @@ void SDRSPS::activate(const std::vector<BitIndexType> &inputBitIndices, int inhi
 
 	auto cmp = [](std::pair<float, int> left, std::pair<float, int> right) { return left.first > right.first; };
 
+	int mainArea = inhibitionSize * inhibitionSize;
+
 	// Group into chunks and inhibit via a sorting algorithm
-	for (int cx = 0; cx < _hiddenWidth - inhibitionSize; cx += inhibitionStride)
-		for (int cy = 0; cy < _hiddenHeight - inhibitionSize; cy += inhibitionStride) {		
+	for (int cx = 0; cx < _hiddenWidth; cx += inhibitionStride)
+		for (int cy = 0; cy < _hiddenHeight; cy += inhibitionStride) {		
 			std::priority_queue<std::pair<float, int>, std::vector<std::pair<float, int>>, decltype(cmp)> data(cmp);
 
-			for (int dx = 0; dx < inhibitionSize; dx++)
-				for (int dy = 0; dy < inhibitionSize; dy++) {
+			int area = std::min(inhibitionSize, _hiddenWidth - cx) * std::min(inhibitionSize, _hiddenHeight - cy);
+
+			float areaRatio = static_cast<float>(area) / mainArea;
+
+			int active = std::round(areaRatio * activeCount);
+
+			for (int dx = 0; dx < std::min(inhibitionSize, _hiddenWidth - cx); dx++)
+				for (int dy = 0; dy < std::min(inhibitionSize, _hiddenHeight - cy); dy++) {
 					int x = cx + dx;
 					int y = cy + dy;
 
@@ -108,7 +116,7 @@ void SDRSPS::activate(const std::vector<BitIndexType> &inputBitIndices, int inhi
 				}
 
 			// Set top N
-			for (int n = 0; n < activeCount; n++) {
+			for (int n = 0; n < active; n++) {
 				int ti = data.top().second;
 
 				data.pop();

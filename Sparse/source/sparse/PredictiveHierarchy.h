@@ -18,8 +18,8 @@ namespace sparse {
 			LayerDesc()
 				: _width(16), _height(16),
 				_feedForwardRadius(8), _inhibitionRadius(8), _recurrentRadius(8), _predictiveRadius(8), _feedBackRadius(8),
-				_inhibitionStride(8), _activeCount(30),
-				_sdrAlpha(0.1f), _predAlpha(0.1f)
+				_inhibitionStride(4), _activeCount(2),
+				_sdrAlpha(0.01f), _predAlpha(0.01f)
 			{}
 		};
 		
