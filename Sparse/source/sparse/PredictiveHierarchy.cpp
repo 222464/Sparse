@@ -28,7 +28,7 @@ void PredictiveHierarchy::simStep(const std::vector<BitIndexType> &inputBitIndic
 	std::vector<BitIndexType> input = inputBitIndices;
 
 	for (int l = 0; l < _layers.size(); l++) {
-		_layers[l]._sdr.activate(input, _layerDescs[l]._inhibitionRadius, _layerDescs[l]._inhibitionStride, _layerDescs[l]._activeCount, _layerDescs[l]._sdrAlpha);
+		_layers[l]._sdr.activate(input, _layerDescs[l]._inhibitionSize, _layerDescs[l]._inhibitionStride, _layerDescs[l]._activeCount, _layerDescs[l]._sdrAlpha);
 
 		input = _layers[l]._sdr.getBitIndices();
 	}

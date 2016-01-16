@@ -8,7 +8,7 @@ namespace sparse {
 		struct LayerDesc {
 			int _width, _height;
 
-			int _feedForwardRadius, _inhibitionRadius, _recurrentRadius, _predictiveRadius, _feedBackRadius;
+			int _feedForwardRadius, _inhibitionSize, _recurrentRadius, _predictiveRadius, _feedBackRadius;
 
 			int _inhibitionStride, _activeCount;
 
@@ -17,8 +17,8 @@ namespace sparse {
 
 			LayerDesc()
 				: _width(16), _height(16),
-				_feedForwardRadius(8), _inhibitionRadius(8), _recurrentRadius(8), _predictiveRadius(8), _feedBackRadius(8),
-				_inhibitionStride(4), _activeCount(2),
+				_feedForwardRadius(8), _inhibitionSize(16), _recurrentRadius(8), _predictiveRadius(8), _feedBackRadius(8),
+				_inhibitionStride(8), _activeCount(2),
 				_sdrAlpha(0.01f), _predAlpha(0.01f)
 			{}
 		};

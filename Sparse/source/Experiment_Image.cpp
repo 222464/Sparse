@@ -93,6 +93,11 @@ int main() {
 
 		psdr.draw(rw, sf::Vector2f(0.0f, 0.0f));
 
+		for (int i = 0; i < ph.getPredBitIndices().size(); i++)
+			std::cout << ph.getPredBitIndices()[i] << " ";
+
+		std::cout << std::endl;
+
 		rw.display();
 
 		iter++;

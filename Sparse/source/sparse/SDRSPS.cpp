@@ -99,14 +99,17 @@ void SDRSPS::activate(const std::vector<BitIndexType> &inputBitIndices, int inhi
 		for (int cy = 0; cy < _hiddenHeight; cy += inhibitionStride) {		
 			std::priority_queue<std::pair<float, int>, std::vector<std::pair<float, int>>, decltype(cmp)> data(cmp);
 
-			int area = std::min(inhibitionSize, _hiddenWidth - cx) * std::min(inhibitionSize, _hiddenHeight - cy);
+			int w = std::min(inhibitionSize, _hiddenWidth - cx);
+			int h = std::min(inhibitionSize, _hiddenHeight - cy);
+
+			int area = w * h;
 
 			float areaRatio = static_cast<float>(area) / mainArea;
 
 			int active = std::round(areaRatio * activeCount);
 
-			for (int dx = 0; dx < std::min(inhibitionSize, _hiddenWidth - cx); dx++)
-				for (int dy = 0; dy < std::min(inhibitionSize, _hiddenHeight - cy); dy++) {
+			for (int dx = 0; dx < w; dx++)
+				for (int dy = 0; dy < h; dy++) {
 					int x = cx + dx;
 					int y = cy + dy;
 
