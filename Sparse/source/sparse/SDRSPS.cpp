@@ -90,19 +90,21 @@ void SDRSPS::activate(const std::vector<BitIndexType> &inputBitIndices, int inhi
 
 	std::unordered_set<int> newBitIndices;
 
+	auto cmp = [](std::pair<float, int> left, std::pair<float, int> right) { return left.first > right.first; };
+
 	// Group into chunks and inhibit via a sorting algorithm
 	for (int cx = 0; cx < _hiddenWidth - inhibitionSize; cx += inhibitionStride)
-		for (int cy = 0; cy < _hiddenHeight - inhibitionSize; cy += inhibitionStride) {
-			std::priority_queue<std::pair<float, int>> data;
+		for (int cy = 0; cy < _hiddenHeight - inhibitionSize; cy += inhibitionStride) {		
+			std::priority_queue<std::pair<float, int>, std::vector<std::pair<float, int>>, decltype(cmp)> data(cmp);
 
 			for (int dx = 0; dx < inhibitionSize; dx++)
 				for (int dy = 0; dy < inhibitionSize; dy++) {
 					int x = cx + dx;
 					int y = cy + dy;
 
-					int hi = x + y * _hiddenWidth;
+					int hio = x + y * _hiddenWidth;
 
-					data.push(std::pair<float, int>(_nodes[hi]._activation, hi));
+					data.push(std::pair<float, int>(_nodes[hio]._activation, hio));
 				}
 
 			// Set top N
@@ -144,7 +146,7 @@ void SDRSPS::activate(const std::vector<BitIndexType> &inputBitIndices, int inhi
 				int vx = vCenterX + dx;
 				int vy = vCenterY + dy;
 
-				if (vx >= 0 && vy >= 0 && vx < _hiddenWidth && vy < _hiddenHeight) {
+				if (vx >= 0 && vy >= 0 && vx < _visibleWidth && vy < _visibleHeight) {
 					int vi = vx + vy * _visibleWidth;
 
 					int hCenterX = std::round(_vToHx * vx);

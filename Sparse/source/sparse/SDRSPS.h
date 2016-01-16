@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <unordered_set>
 #include <queue>
+#include <functional>
 
 namespace sparse {
 	typedef int BitIndexType;
